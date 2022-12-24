@@ -20,6 +20,7 @@ module Jekyll
           "day"      => "/:year/:month/:day/",
           "tag"      => "/tag/:name/",
           "category" => "/category/:name/",
+          "cast" => "/cast/:name/",
         },
       }.freeze
 
@@ -43,6 +44,7 @@ module Jekyll
       # Read archive data from posts
       def read
         read_tags
+        read_cast
         read_categories
         read_dates
       end
@@ -54,7 +56,13 @@ module Jekyll
           end
         end
       end
-
+      def read_cast
+        if enabled? "cast"
+          cast.each do |title, posts|
+            @archives << Archive.new(@site, title, "cast", posts)
+          end
+        end
+      end
       def read_categories
         if enabled? "categories"
           categories.each do |title, posts|
@@ -86,6 +94,10 @@ module Jekyll
         @site.post_attr_hash("tags")
       end
 
+      
+      def cast
+        @site.post_attr_hash("cast")
+      end
       def categories
         @site.post_attr_hash("categories")
       end
